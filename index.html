@@ -3,93 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tunu Journal | Coming Soon</title>
+    <title>THE TUNU JOURNAL | Archival Repository</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --paper: #f9f7f2;
+            --ink: #1a1a1a;
+            --accent: #2c3e50;
+            --border: #d4d4d4;
+            --header-bg: #1e293b;
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
         body {
-            background-color:rgb(46, 46, 46);
-            min-height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            font-family: sans-serif;
-            background-image: url(/resources/bgs/11_09_2018_Textures5595A.jpg);
+            font-family: 'Georgia', serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--header-bg);
+            color: #fff;
+            padding: 30px 40px;
+            border-bottom: 4px solid #c5a059;
+            background-image: url(/assets/bgs/11_09_2018_Textures5595A.jpg);
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
         }
-        main{
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: stretch;
-            width: 100%;
-            height: 100%;
-            flex-grow: 1;
 
-            >div{
-                flex-grow: 1;
+        .tunu-desc { display: flex; align-items: center; gap: 20px; }
+
+        .tunu-logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .tunu-name h1 { font-size: 2.2rem; letter-spacing: 0.02em; }
+        .tunu-name p { font-family: sans-serif; font-size: 0.75rem; letter-spacing: 0.2em; opacity: 0.8; }
+
+        /* Navigation Styles */
+        .nav {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            color: var(--ink);
+            text-decoration: none;
+            padding: 20px 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-right: 1px solid var(--border);
+        }
+        .nav-item:hover { background: #f0f0f0; }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            padding: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: rgb(255, 255, 255);
+            position: fixed;
+            z-index: 200000;
+            top: 0px;
+            color: black;
+            right: 10px;
+            box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.259);
+        }
+
+        main { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+
+        .intro { font-size: 1.2rem; margin-bottom: 40px; border-left: 4px solid var(--ink); padding-left: 20px; }
+
+        .search-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 60px;
+        }
+
+        input, button {
+            font-family: 'Georgia', serif;
+            padding: 12px 20px;
+            border: 1px solid var(--ink);
+            outline: none;
+        }
+
+        button {
+            background: var(--ink);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 40px; 
+        }
+
+        @media (min-width: 992px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .card {
+            background: #fff;
+            display: flex;
+            border: 1px solid var(--border);
+            padding: 30px;
+            gap: 30px;
+        }
+
+        .card-image img {
+            width: 140px;
+            height: 180px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .card-content h3 { font-size: 1.8rem; margin-bottom: 10px; color: var(--accent); }
+        .card-content p { margin-bottom: 20px; color: #444; }
+
+        .btn-link {
+            display: inline-block;
+            border: 1px solid var(--ink);
+            color: var(--ink);
+            padding: 8px 16px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        .btn-link:hover { background: var(--ink); color: #fff; }
+
+        footer {
+            background: #f0f0f0;
+            padding: 60px 40px 30px 40px;
+            border-top: 4px solid var(--ink);
+            margin-top: 80px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+        .footer-col h4 { font-family: sans-serif; text-transform: uppercase; margin-bottom: 20px; font-size: 0.9rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 10px; font-size: 0.9rem; }
+        .footer-col a { color: var(--ink); text-decoration: none; }
+        .footer-col a:hover { text-decoration: underline; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position:absolute;
+                top: 0;
+                left: 0;
+                background: white;
+                z-index: 10;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.active { display: flex; }
+            .nav-item { border-right: none; border-bottom: 1px solid var(--border); }
+            .card { flex-direction: column; }
+            .card-image img { width: 100%; height: auto; }
+            .tunu-desc{
+                flex-direction: column;
+                gap: 0;
+            }
+            .tunu-name{
+                text-align: center;
+            }
+            .tunu-logo img{
+                width: 100px;
+                height: 100px;
             }
         }
-        .b-img, .top-img{
-            justify-content: center;
-            flex-direction: column;
-            display: flex;
-            padding: 10px;
-            align-items:center;
-            background-image: url(/resources/bgs/cloudsmars@2x.png);
-            background-position: bottom;
-            background-repeat: no-repeat;
-            background-size: contain;
-            max-height: 150px;
-        }
-        .top-img{
-            background-image: url(/resources/bgs/cloudsmoon@2x.png);
-            background-position: top;
-            position: relative;
-
-        }
-        h4{
-            margin-top: 30px;
-            color: rgb(255, 0, 242);
-            text-shadow: 4px 0px 10px rgb(0, 0, 0);
-            text-align: center;
-            font-size: 0.5em;
-        }
-        .content{
-            width: 95%;
-            max-width: 1200px;
-            margin: auto;
-            border-radius: 20px;
-            color: white;
+        .bottom-div{
+            width: 100%;
+            height: 10px;
+            padding: 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.184);
             justify-content: center;
             align-items: center;
             display: flex;
-            flex-direction: column;
-            font-size: 3em;
-            text-align: center;
-        }
-        #logo{
-            margin: auto;
-            width: 100px;
+            font-size: smaller;
+            color: grey;
+            background: #f0f0f0;
+
         }
 
+
+        .search-overlay{
+            background: rgb(255, 255, 255);
+            width:100%;
+            height: 100vh;
+            position: fixed;
+            top: -100%;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items:flex-start;
+            z-index: 300000;
+            opacity: 0;
+        }
+        .search-form{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 200px auto;
+
+
+        }
+        .search-content{
+            width: 100%;
+            padding: 20px;
+            position: relative;
+        }
+        .searchInput{
+            width: 100% ;
+            max-width: 400px;
+            &::-webkit-search-cancel-button{
+                cursor: pointer;
+            }
+        }
+        #closeSearch{
+            background: #0000;
+            color: red;
+            font-size: xx-large;
+            padding: 5px;
+            position: absolute;
+            right: 30px;
+            top: 20px;
+            float: right;
+            border: 0;
+            &:active{
+                scale: 0.9;
+            }
+        }
+        .searchBtn{
+            transition: all 0.15s ease-in-out;
+            &:active{
+                text-indent: 2px;
+                transition: all 0.15s ease-in-out;
+            }
+        }
+        .search-overlay.appear{
+            display: flex;
+            opacity: 1;
+            top: 0;
+        }
     </style>
 </head>
 <body>
-<main>
-    <div class="top-img">
-        <img id="logo" style="margin-top: 20px;" src="/resources/icons/tunu_logo.png" alt="">
+    <div class="search-overlay">
+        <div class="search-content">
+            <div class="searchCloseDiv">
+                <button id="closeSearch">&times;</button>
+            </div>
+            <div class="search-form">
+                <input type="search" name="" placeholder="Search Journals, Issues, Volumes, e.t.c" id="query" class="searchInput">
+                <button class="searchBtn" id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
     </div>
-    <div class="content">
-        <h4>TUNU PUBLISHERS JOURNAL</h4>
-        <h2>COMING SOON</h2>
-    </div>
-    <div class="b-img">
+    
+    <header class="header">
+        <div class="tunu-desc">
+            <div class="tunu-logo">
+                <img src="/assets/icons/tunu_logo.png" alt="TUNU LOGO">
+            </div>
+            <div class="tunu-name">
+                <h1>THE TUNU JOURNAL</h1>
+                <p>ARCHIVAL REPOSITORY OF SCHOLARLY WORKS</p>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="nav">
+        <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+        <div class="nav-links" id="nav-links">
+            <a class="nav-item" href="#"><i class="fas fa-home"></i> HOME</a>
+            <a class="nav-item" href="#"><i class="fas fa-scroll"></i> ARCHIVES</a>
+            <a class="nav-item" href="#"><i class="fas fa-users"></i> FACULTY</a>
+            <a class="nav-item" href="#"><i class="fas fa-pen-nib"></i> AUTHORS</a>
+            <a class="nav-item" href="#"><i class="fas fa-newspaper"></i> NEWS</a>
+            <a class="nav-item" href="#"><i class="fas fa-search"></i> SEARCH</a>
+            <a class="nav-item" href="#"><i class="fas fa-sun"></i> THEME</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="intro">
+            An established repository for the dissemination of peer-reviewed research and scholarly inquiry. Dedicated to the preservation of intellectual rigor.
+        </section>
+
+        <div class="search-area">
+            <input type="text" style="flex-grow:1" placeholder="Search volumes...">
+            <button>SEARCH ARCHIVE</button>
+        </div>
+
+        <section class="grid">
+            <script>
+                const journals = [
+                    { title: "The Art of Mindful Journaling", desc: "Examination of reflexive writing as a tool for cognitive clarity." },
+                    { title: "Design & Instrumentation", desc: "Treatise on writing paradigms and archival integrity." },
+                    { title: "Quantum Sociology", desc: "Analyzing social structures through probabilistic frameworks." },
+                    { title: "Urban Ecology Theory", desc: "Case studies on sustainable architecture in mega-cities." },
+                    { title: "Linguistic Anthropology", desc: "Preservation of endangered dialects in the modern era." },
+                    { title: "Computational Ethics", desc: "Algorithmic bias and decision-making in autonomous systems." },
+                    { title: "Classical Aesthetics", desc: "Reinterpreting Hellenistic beauty in contemporary media." },
+                    { title: "Macroeconomic Shifts", desc: "Longitudinal study of global financial volatility." },
+                    { title: "Biomimetic Materials", desc: "Engineering solutions modeled after natural biological structures." },
+                    { title: "Neuro-Cognitive Learning", desc: "Impact of digital consumption on attention span." },
+                    { title: "Historical Cartography", desc: "Techniques in map reconstruction and topographical accuracy." },
+                    { title: "Theoretical Physics Review", desc: "Consolidated volume on string theory developments." }
+                ];
+
+                document.write(journals.map(j => `
+                    <article class="card">
+                        <div class="card-image"><img src="/assets/plchd/journal.jpg" alt="Book"></div>
+                        <div class="card-content">
+                            <h3>${j.title}</h3>
+                            <p>${j.desc}</p>
+                            <a href="#" class="btn-link">VIEW VOLUME</a>
+                        </div>
+                    </article>
+                `).join(''));
+            </script>
+        </section>
+    </main>
+
+    <footer id="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">Mission Statement</a></li>
+                    <li><a href="#">Editorial Board</a></li>
+                    <li><a href="#">Peer Review Policy</a></li>
+                    <li><a href="#">Open Access Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Submission Guidelines</a></li>
+                    <li><a href="#">Citation Style Guide</a></li>
+                    <li><a href="#">Library Support</a></li>
+                    <li><a href="#">Contact Archives</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Copyright Notices</a></li>
+                    <li><a href="#">Institutional Licenses</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#">Institutional Twitter</a></li>
+                    <li><a href="#">Academic RSS Feeds</a></li>
+                    <li><a href="#">Newsletter Sign-up</a></li>
+                    <li><a href="#">Developer API</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <div class="bottom-div">
+       &copy; 2026 TUNU PUBLISHERS. All Rights Reserved
+
     </div>
 
-</main>
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            navLinks.scrollIntoView()
+            
+        });
+    </script>
 </body>
 </html>
