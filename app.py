@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 app.secret_key = "tunu-journal-secret"
 
-CORS(app, supports_credentials=True, origins=['https://www.tunujournal.com', 'https://tunujournal.com', 'www.tunuournal.com'])
+CORS(app, supports_credentials=True, origins=['https://www.tunujournal.com', 'https://tunujournal.com', 'www.tunujournal.com'])
 
 # DATABASE
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tunujournal.db"
