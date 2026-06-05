@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Portal | THE TUNU JOURNAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --paper: #f9f7f2; --ink: #1a1a1a; --border: #d4d4d4; }
+        body { font-family: 'Georgia', serif; background: var(--paper); color: var(--ink); padding: 40px; }
+        .card { background: #fff; padding: 30px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .btn { background: var(--ink); color: #fff; padding: 10px 20px; text-decoration: none; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid var(--border); padding: 10px; text-align: left; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="auth-section" class="card">
+            <h2>Welcome to the Author Portal</h2>
+            <a href="/login" class="btn">Login with Google</a>
+        </div>
+        <div id="portal-section" class="card" style="display:none;">
+            <h2 id="user-welcome"></h2>
+            <a href="/submit" class="btn">New Submission</a>
+            <a href="/logout" class="btn" style="background:#666;">Logout</a>
+            <table>
+                <thead><tr><th>Title</th><th>Status</th><th>PDF</th></tr></thead>
+                <tbody id="submission-list"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        fetch('/me').then(res => res.json()).then(user => {
+            if(user.email){
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('portal-section').style.display = 'block';
+                document.getElementById('user-welcome').innerText = `Welcome, ${user.name}`;
+                loadSubmissions();
+            }
+        });
+        async function loadSubmissions(){
+            const res = await fetch('/my-submissions');
+            const data = await res.json();
+            const list = document.getElementById('submission-list');
+            list.innerHTML = data.map(s => `<tr><td>${s.title}</td><td>${s.status}</td><td><a href="${s.pdf_url}">Download</a></td></tr>`).join('');
+        }
+    </script>
+</body>
+</html>

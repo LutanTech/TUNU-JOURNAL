@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE TUNU JOURNAL | Archival Repository</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main/def.css">
+</head>
+<style> 
+        .breadcrumb { font-family: sans-serif; font-size: 0.8rem; margin-bottom: 20px; color: #666; }
+        .breadcrumb a { color: var(--ink); text-decoration: none; }
+
+        .issue-hero { margin-bottom: 60px; border-bottom: 2px solid var(--ink); padding-bottom: 40px; }
+        .issue-hero h1 { font-size: 2.5rem; color: var(--accent); margin-bottom: 10px; }
+        .issue-meta { font-family: sans-serif; font-size: 0.9rem; color: #555; margin-bottom: 20px; }
+
+        .abstract { font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px; }
+
+        .toc { border: 1px solid var(--border); padding: 30px; }
+        .toc h2 { font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .article-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .article-info h4 { font-size: 1.1rem; }
+        .article-info p { font-size: 0.9rem; color: #666; }
+        .article-actions { display: flex; gap: 10px; a{flex-grow: 0 !important; height: fit-content; gap:5px; display: flex; justify-content: center; align-items: center;} }
+        .btn-small { padding: 5px 10px; border: 1px solid var(--ink); font-size: 0.75rem; text-decoration: none; color: var(--ink); text-transform: uppercase; }
+        .btn-small:hover { background: var(--ink); color: #fff; }
+ 
+    </style>
+</head>
+<body>
+    
+    <header class="header">
+        <div class="tunu-desc">
+            <div class="tunu-logo">
+                <img src="/assets/icons/tunu_logo.png" alt="TUNU LOGO">
+            </div>
+            <div class="tunu-name">
+                <h1>THE TUNU JOURNAL</h1>
+                
+                <p>ARCHIVAL REPOSITORY OF SCHOLARLY WORKS</p>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="nav">
+        <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+        <div class="nav-links" id="nav-links">
+            <a class="nav-item" href="#"><i class="fas fa-home"></i> HOME</a>
+            <a class="nav-item" href="#"><i class="fas fa-scroll"></i> ARCHIVES</a>
+            <a class="nav-item" href="#"><i class="fas fa-users"></i> FACULTY</a>
+            <a class="nav-item" href="#"><i class="fas fa-pen-nib"></i> AUTHORS</a>
+            <a class="nav-item" href="#"><i class="fas fa-newspaper"></i> NEWS</a>
+            <a class="nav-item"> <i class="fas fa-language"></i> LANGUAGES </a>
+            <a class="nav-item" id="searchToggle"><i class="fas fa-search"></i> SEARCH</a>
+            <a class="nav-item" id="toggleTheme"><i class="fas fa-sun"></i> THEME</a>
+        </div>
+    </nav>
+
+    <div class="loader-overlay">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <div class="loader-text">
+                Please wait...
+            </div>
+        </div>
+    </div>
+
+    <div class="search-overlay">
+        <div class="search-content">
+            <div class="searchCloseDiv">
+                <button id="closeSearch">&times;</button>
+            </div>
+            <div class="search-form">
+                <input type="search" name="" placeholder="Search Journals, Issues, Volumes, e.t.c" id="query" class="searchInput">
+                <button class="searchBtn" id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="recent-searches">
+                <h4 style="margin-bottom: 10px;"> <i class="fas fa-clock"></i> Recent Searches</h4>
+                <div class="recent-list">
+
+    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div class="breadcrumb"><a href="index.html">Archives</a> / Volume 12 / Issue 4</div>
+        
+        <section class="issue-hero">
+            <h1>Computational Ethics: Algorithmic Bias</h1>
+            <div class="issue-meta">Published: October 2023 | Volume 12, Issue 4 | DOI: 10.1093/tunu.12.4</div>
+            <p class="abstract">
+                This issue explores the profound ethical implications of algorithmic decision-making systems in contemporary socio-technical infrastructures. Featuring peer-reviewed analyses on systemic bias, transparency, and the governance of autonomous decision agents, we provide a multidisciplinary perspective on the challenges of maintaining ethical integrity in computational environments.
+            </p>
+        </section>
+
+        <section class="toc">
+            <h2>Articles in this Issue</h2>
+            <div class="article-item">
+                <div class="article-info">
+                    <h4>Algorithmic Fairness in Public Policy</h4>
+                    <p>Dr. Elena Vance et al.</p>
+                </div>
+                <div class="article-actions">
+                    <a href="#" class="btn-small"> <i class="fas fa-eye"></i> PDF</a>
+                    <a href="#" class="btn-small"> <i class="fas fa-book"></i> Abstract</a>
+                </div>
+            </div>
+            <div class="article-item">
+                <div class="article-info">
+                    <h4>The Transparency Dilemma in Black-Box Models</h4>
+                    <p>Marcus Thorne</p>
+                </div>
+                <div class="article-actions">
+                    <a href="#" class="btn-small"><i class="fas fa-eye"></i>PDF</a>
+                    <a href="#" class="btn-small"><i class="fas fa-book"></i>Abstract</a>
+                </div>
+            </div>
+            <div class="article-item">
+                <div class="article-info">
+                    <h4>Governing Autonomous Systems: A Legal Framework</h4>
+                    <p>Sarah Jenkins</p>
+                </div>
+                <div class="article-actions">
+                    <a href="#" class="btn-small"><i class="fas fa-eye"></i>PDF</a>
+                    <a href="#" class="btn-small"><i class="fas fa-book"></i>Abstract</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer id="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">Mission Statement</a></li>
+                    <li><a href="#">Editorial Board</a></li>
+                    <li><a href="#">Peer Review Policy</a></li>
+                    <li><a href="#">Open Access Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Submission Guidelines</a></li>
+                    <li><a href="#">Citation Style Guide</a></li>
+                    <li><a href="#">Library Support</a></li>
+                    <li><a href="#">Contact Archives</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Copyright Notices</a></li>
+                    <li><a href="#">Institutional Licenses</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#">Institutional Twitter</a></li>
+                    <li><a href="#">Academic RSS Feeds</a></li>
+                    <li><a href="#">Newsletter Sign-up</a></li>
+                    <li><a href="#">Developer API</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <div class="bottom-div">
+       &copy; 2026 TUNU PUBLISHERS. All Rights Reserved
+
+    </div>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            navLinks.scrollIntoView()
+            
+        });
+        document.addEventListener('DOMContentLoaded', ()=>{
+            const sBtn = document.querySelector('#searchToggle')
+            const cBtn = document.querySelector('#closeSearch')
+            const searchInput = document.querySelector('#query')
+            const searchBtn = document.querySelector('#searchBtn')
+            searchInput.addEventListener('keypress', (e)=>{
+                if(e.key == 'Enter'){
+                    saveRecent(searchInput.value.trim())
+                }
+            })
+
+            searchBtn.addEventListener('click', ()=>{
+                saveRecent(searchInput.value.trim())
+            })
+            const searchDiv = document.querySelector('.search-overlay')
+            sBtn.addEventListener('click', ()=>{
+                searchDiv.classList.toggle('appear')
+            })
+            cBtn?.addEventListener('click', ()=>{
+                searchDiv.classList.toggle('appear')
+            })
+
+            let recents = JSON.parse(localStorage.getItem('recent-searches')) || []
+
+            updateSearchUI(recents)
+
+
+            function saveRecent(text){
+                isLoading(true)
+
+                if(!text) return;
+                setTimeout(()=>{
+                    window.location.href = `/search/?query=${String(text.replaceAll(' ', '+'))}`
+                }, 1000)
+                if(recents.find(i=>String(i.text).toLowerCase() == String(text).toLowerCase())) return;
+
+                recents.unshift({'text':text, 'id':crypto.randomUUID()})
+                recents = recents.slice(0, 10)
+
+                localStorage.setItem('recent-searches', JSON.stringify(recents))
+
+                updateSearchUI(recents)
+                isLoading(false)
+                
+
+            }
+
+            function updateSearchUI(recents){
+                const parent = document.querySelector('.recent-list')
+                parent.innerHTML = ''
+
+                if(!recents || recents.length < 1 || recents.text){
+                    parent.innerHTML = `
+                    
+                    <div class="empty">
+                    <i class="fas fa-search"></i>
+                    <br>
+
+                    <p> Nothing in recents </p>
+                    </div>
+
+                    `
+
+                }
+
+                recents.forEach((i, index)=>{
+                    const div = document.createElement('div')
+                    div.className = 'list-item'
+                    div.setAttribute('s-id', i.id)
+                    div.title = 'Click to search: ' + i.text
+                    div.innerHTML = `
+                        <i class="fas fa-external-link"></i>
+                        ${i.text.length > 20 ? String(i.text).slice(0, 20) + '...' : i.text}
+                        <button id="del-recent" class="del-btn" data-index="${index}">×</button>
+
+                    `
+                    parent.appendChild(div)
+
+                    div.addEventListener('click', (e)=>{
+                        if(!e.target.classList.contains('del-btn')){
+                            searchInput.value = i.text
+                            setTimeout(() =>{
+                            searchBtn.click()
+                            }, 20)
+                        }
+                    })
+
+                    const btn = div.querySelector('button')
+                    btn.addEventListener('click', ()=>{
+                        let index = btn.getAttribute('data-index')
+
+                        recents.splice(index)
+
+                        localStorage.setItem('recent-searches',JSON.stringify(recents))
+
+                        div.remove()
+                        updateSearchUI()
+
+
+                    })
+                })
+
+            }
+
+            function isLoading(load){
+                const loader = document.querySelector('.loader-overlay')
+                if(load){
+                    loader.classList.add('appear')
+                } else{
+                    loader.classList.remove('appear')
+                }
+            }
+            const themeBtn = document.querySelector('#toggleTheme')
+            const theme = localStorage.getItem('theme')
+            if(theme && theme == 'dark'){
+                document.body.classList.add('dark-theme')
+            }
+
+            themeBtn.addEventListener('click', ()=>{
+                if(theme == 'dark' && document.body.classList.contains('dark-theme')){
+                    toggleTheme()
+                    localStorage.removeItem('theme')
+                } else{
+                    toggleTheme('dark')
+                    localStorage.setItem('theme', 'dark')
+                }
+            })
+
+            function toggleTheme(type){
+
+                if(type && type == 'dark'){
+                    document.body.classList.add('dark-theme')
+                } else{
+                    document.body.classList.remove('dark-theme')
+                }
+
+            }
+        })
+    </script>
+</body>
+</html>

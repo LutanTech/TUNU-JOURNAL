@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results | THE TUNU JOURNAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --paper: #f9f7f2;
+            --ink: #1a1a1a;
+            --accent: #2c3e50;
+            --border: #d4d4d4;
+            --header-bg: #1e293b;
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; }
+        
+        body { font-family: 'Georgia', serif; background-color: var(--paper); color: var(--ink); line-height: 1.6; }
+
+        .header { background: var(--header-bg); color: #fff; padding: 30px 40px; border-bottom: 4px solid #c5a059; }
+        .tunu-desc { display: flex; align-items: center; gap: 20px; }
+        .tunu-logo img { width: 60px; height: 60px; object-fit: contain; }
+        .tunu-name h1 { font-size: 2.2rem; }
+        
+        .nav { background: #fff; display: flex; align-items: center; border-bottom: 1px solid var(--border); padding: 10px 40px; }
+        .nav-item { color: var(--ink); text-decoration: none; padding: 10px 15px; font-family: sans-serif; font-size: 0.85rem; font-weight: 600; }
+        
+        main { max-width: 900px; margin: 60px auto; padding: 0 20px; }
+        .results-header { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .search-item { background: #fff; padding: 25px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .search-item h3 { color: var(--accent); margin-bottom: 10px; }
+        .search-item p { color: #555; margin-bottom: 15px; }
+
+        .loader { text-align: center; font-style: italic; padding: 20px; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="tunu-desc">
+            <div class="tunu-logo"><img src="/assets/icons/tunu_logo.png" alt="TUNU"></div>
+            <div class="tunu-name"><h1>THE TUNU JOURNAL</h1></div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <a class="nav-item" href="index.html"><i class="fas fa-home"></i> HOME</a>
+    </nav>
+
+    <main>
+        <div class="results-header">
+            <h1 id="searchTitle">Searching...</h1>
+            <p id="searchQueryDesc"></p>
+        </div>
+
+        <div id="resultsList">
+            <div class="loader"><i class="fas fa-spinner fa-spin"></i> Contacting archival server...</div>
+        </div>
+    </main>
+
+    <script>
+        async function runSearch() {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('query');
+            const titleEl = document.getElementById('searchTitle');
+            const descEl = document.getElementById('searchQueryDesc');
+            const listEl = document.getElementById('resultsList');
+
+            if (!query) {
+                titleEl.innerText = "No Query Provided";
+                listEl.innerHTML = "<p>Please return to the home page to initiate a search.</p>";
+                return;
+            }
+
+            titleEl.innerText = `Results for "${query.replace(/\+/g, ' ')}"`;
+            
+            // Mocking a backend fetch
+            try {
+                // Simulate network latency
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                const mockBackendResponse = [
+                    { title: "Computational Ethics: Algorithmic Bias", desc: "Peer-reviewed analysis of systemic bias.", link: "#" },
+                    { title: "Governance of Autonomous Systems", desc: "Legal frameworks for AI.", link: "#" }
+                ];
+
+                listEl.innerHTML = '';
+                mockBackendResponse.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.innerHTML = `<h3>${item.title}</h3><p>${item.desc}</p><a href="${item.link}">VIEW ARTICLE</a>`;
+                    listEl.appendChild(div);
+                });
+
+                descEl.innerText = `Found ${mockBackendResponse.length} articles matching your query.`;
+            } catch (err) {
+                listEl.innerHTML = "<p>Error connecting to the archival server. Please try again later.</p>";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', runSearch);
+    </script>
+</body>
+</html>
