@@ -22,13 +22,15 @@ from flask import send_from_directory
 app = Flask(__name__)
 
 app.secret_key = "tunu-journal-secret"
-
+print("TUNU API STARTED")
 CORS(
     app,
     supports_credentials=True,
     origins=[
         "https://www.tunujournal.com",
+        "https://www.submit.tunujournal.com",
         "https://tunujournal.com",
+        "https://submit.tunujournal.com",
         "http://127.0.0.1:5500"
     ]
 )
@@ -141,6 +143,9 @@ with app.app_context():
 def get_current_user():
     token = request.headers.get("Authorization")
     if not token:
+        token = request.args.get('token')
+        
+    if not token:
         return None
 
     payload = verify_token(token)
@@ -161,20 +166,66 @@ def get_current_user():
 
 @app.route("/")
 def home():
-    return jsonify({"message": "Tunu Journal API running"})
+    return jsonify({"message": "Tunu Journal Smoking"})
 
+@app.errorhandler(Exception)
+def handle_error(e):
+    import traceback
 
-@app.route('/api/register')
+    print("ERROR:", str(e))
+    traceback.print_exc()
+
+    return jsonify({
+        "error": str(e),
+        "type": str(type(e))
+    }), 500
+
+@app.route('/api/register', methods=['POST'])
 def api_register():
-    data = request.get_json()
-    
+
+    data = request.get_json(silent=True)
+
     if not data:
-        return jsonify({"error":''})
-    return jsonify({'msg':'Registered sucessfully. Redirecting to Login'}), 200
+        return jsonify({
+            "error": "No data received"
+        }), 400
+
+    name = data.get('name', '').strip()
+    email = data.get('email', '').strip().lower()
+    password = data.get('password', '')
+
+    if not name or not email or not password:
+        return jsonify({
+            "error": "All fields are required"
+        }), 400
+
+    existing_user = User.query.filter_by(email=email).first()
+
+    if existing_user:
+        return jsonify({
+            "error": "Email already registered"
+        }), 409
+
+    user = User(
+        name=name,
+        email=email,
+        password=generate_password_hash(password),
+        email_method=True,
+        google_method=False,
+        is_active=True,
+        tkv=gen_id("TK", 10)
+    )
+
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Registered successfully. Redirecting to Login"
+    }), 201
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
-    data = request.get_json()
+    data = request.get_json(silent=True)
     email = data.get('email')
     password = data.get('password')
     
@@ -187,6 +238,12 @@ def api_login():
     
     if user.google_method and not user.email_method or not user.password or user.google_id:
         return jsonify({'error':'Invalid login method; Login using Google'}), 400
+    
+    if not check_password_hash(user.password, password):
+        return jsonify({
+            "error": "Invalid credentials"
+        }), 401
+    
     
     user.tkv = gen_id("TK", 10)
     db.session.commit()
@@ -274,7 +331,7 @@ def callback():
     ).decode()
 
     return redirect(
-        f"http://127.0.0.1:5500/dashboard/?params={encoded}"
+        f"https://tunujournal.com/dashboard/?params={encoded}"
     )
 
 
@@ -351,19 +408,30 @@ def get_submissions():
 
 @app.route('/admin/update/<submission_id>', methods=['POST'])
 def update_submission(submission_id):
-    """Updates the status of a specific manuscript submission."""
-    data = request.json
+
+    data = request.get_json(silent=True) or {}
+
     new_status = data.get('status')
-    
-    # Find the submission in the database
+
+    if not new_status:
+        return jsonify({
+            "error": "status is required"
+        }), 400
+
     submission = Submission.query.get(submission_id)
-    
-    if submission:
-        submission.status = new_status
-        db.session.commit() # Save changes
-        return jsonify({"message": "Status updated successfully", "status": new_status}), 200
-    
-    return jsonify({"message": "Submission not found"}), 404
+
+    if not submission:
+        return jsonify({
+            "message": "Submission not found"
+        }), 404
+
+    submission.status = new_status
+    db.session.commit()
+
+    return jsonify({
+        "message": "Status updated successfully",
+        "status": new_status
+    }), 200
 
 # MY SUBMISSIONS
 @app.route("/my-submissions")
@@ -390,7 +458,3 @@ def my_submissions():
 @app.route("/logout")
 def logout():
     return jsonify({"message": "delete token on client"})
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
