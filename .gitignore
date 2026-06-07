@@ -2,3 +2,10 @@ client_secret.json
 *.env
 /.env
 *.json
+/instance
+/uploads
+/migrations
+/__pycache__
+/disable.ahk
+instance
+*.db

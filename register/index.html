@@ -21,16 +21,17 @@
             background: white;
             padding: 40px;
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             gap: 10px;
             width: 95%;
-            max-width: 350px;
+            max-width: 500px;
             border: 1px solid var(--border);
         }
-        .logo {
+        .logo img{
             margin: 10px auto;
-            border: 1px solid var(--ink);
+            background: rgb(233, 233, 233);
             object-fit: contain;
+            border-radius: 50%;
             width: 60px;
             height: 60px;
             display: flex;
@@ -95,6 +96,8 @@
             border: 1px solid rgba(0, 0, 0, 0.122);
             font-size: small;
             display: none;
+            margin: auto;
+            width: 100%;
         }
         .show{
             display: flex;
@@ -122,13 +125,38 @@
             }
             
         }
+        .fields{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 10px;
+        }
+        .f-4{
+            width: 100%;
+            margin: auto;
+        }
+        .logo-cont{
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        @media (max-width:500px) {
+            .f-1{
+                flex-direction: column;
+            }
+            
+        }
     </style>
 </head>
 <body>
     <form id="loginForm">
-        <div class="logo">TJ</div>
+        <div class="logo-cont">
+        <div class="logo">
+            <img src="/assets/icons/icon.png" alt="">
+        </div>
         <div style="text-align:center; font-weight:bolder; letter-spacing: 0.1em;">THE TUNU JOURNAL</div>
-
+        <hr style="margin: 10px 0;">
+        <div style="text-align:center; font-weight:bolder">Register</div>
+        </div>
         <div class="alertDiv error">
             <div class="alertIcon">
                 <i class="fas fa-bell"></i>
@@ -138,33 +166,43 @@
             </div>
         </div>
 
+        <div class="fields f-1">
+
+        <div class="input-field">
+            <i class="fas fa-user-circle inp-icon"></i>
+            <div class="inp"><input type="text" id="name" placeholder="Your Name" required></div>
+        </div>
+
         <div class="input-field">
             <i class="fas fa-envelope inp-icon"></i>
             <div class="inp"><input type="text" id="email" placeholder="Email Address" required></div>
         </div>
+
+    </div>
+    <div class="fields f-2">
 
         <div class="input-field">
             <i class="fas fa-lock inp-icon"></i>
             <div class="inp"><input type="password" id="password" placeholder="Password" required></div>
             <div class="eye"><i class="fas fa-eye"></i></div>
         </div>
-        <div class="page-links">
-            <a href="/forgot">Forgot Password?</a>
-            <a href="/register"> Register</a>
-        </div>
-
-        <button class="btn submit" type="submit">
-            <i style="margin-right: 10px;" class="fas fa-sign-in-alt"></i>            
-            Login</button>
-
-      <span style="text-align: center;">Or</span>
-
-        <a class="btn google-btn" href="/google/login" type="button">
-            <i style="color: orangered;" class="fab fa-google"></i>
-            Login with Google</a>
         
+    </div>
+        <button class="btn submit" type="submit">
+            <i style="margin-right: 10px;" class="fas fa-user-plus"></i>            
+            Register</button>
+            <div class="fields f-4">
 
-        <div class="footer">
+            <a class="btn google-btn" href="/google/login" type="button">
+                <i style="color: orangered;" class="fab fa-google"></i>
+                Continue with Google</a>
+            <a class="btn google-btn" href="/login" type="button">
+                    <i style="color: orangered;" class="fas fa-sign-in-alt"></i>
+                    Already have an account? Login
+            </a>
+    </div>
+
+        <div class="footer" style="width: 100%;">
             Tunu Journal &copy; 2026. All Rights Reserved.
         </div>
     </form>
@@ -181,19 +219,19 @@
         document.querySelector('#loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value.trim()
+            const name = document.getElementById('name').value.trim()
             const password = document.querySelector('#password').value.trim()
 
-            console.log(email, password)
-            if(!email || !password){
+            if(!email || !password || !name){
                 showAlert('error', 'All fields are required')
             }
             isLoading(true)
-            fetch(API_URL + '/api/login',{
+            fetch(API_URL + '/api/register',{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
                 },
-                body:JSON.stringify({"email":email, "password":password})
+                body:JSON.stringify({"email":email, "password":password, "name":name})
             })
             .then(r=>r.json())
             .then(data=>{

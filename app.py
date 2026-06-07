@@ -1,28 +1,46 @@
-from flask import Flask, request, jsonify, session, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+import os
+import secrets
+import string
+import json
+import base64
+import time
+import hmac
+import hashlib
+from urllib.parse import urlencode
+
+from flask import Flask, jsonify, redirect, request, session, url_for
 from flask_cors import CORS
-from werkzeug.utils import secure_filename
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from google_auth_oauthlib.flow import Flow
 import requests
-import os
-import string
-import secrets
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from flask import send_from_directory
 
 app = Flask(__name__)
 
 app.secret_key = "tunu-journal-secret"
 
-CORS(app, supports_credentials=True, origins=['https://www.tunujournal.com', 'https://tunujournal.com', 'www.tunujournal.com'])
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[
+        "https://www.tunujournal.com",
+        "https://tunujournal.com",
+        "http://127.0.0.1:5500"
+    ]
+)
 
-# DATABASE
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tunujournal.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# UPLOADS
-app.config["UPLOAD_FOLDER"] = "uploads"
+app.config["UPLOAD_FOLDER"] = "uploads/usercontent"
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -34,42 +52,161 @@ SCOPES = [
     "https://www.googleapis.com/auth/userinfo.profile"
 ]
 
+SECRET_KEY = "super-token-secret"
 
-# ID GENERATOR
-def gen_id():
+
+# ---------------- ID GENERATOR ----------------
+
+def gen_id(prefix="ID", length=10):
     chars = string.ascii_letters + string.digits
-    return "SUB-" + "".join(secrets.choice(chars) for _ in range(10))
+    return prefix + "-" + "".join(secrets.choice(chars) for _ in range(length))
 
 
-# MODELS
+# ---------------- TOKEN SYSTEM ----------------
+
+def generate_token(user_id, tkv, expires_in=86400):
+    payload = {
+        "user_id": user_id,
+        "tkv": tkv,
+        "exp": int(time.time()) + expires_in
+    }
+
+    payload_json = json.dumps(payload, separators=(",", ":"))
+    payload_b64 = base64.urlsafe_b64encode(payload_json.encode()).decode()
+
+    signature = hmac.new(
+        SECRET_KEY.encode(),
+        payload_b64.encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    return f"{payload_b64}::{signature}"
+
+
+def verify_token(token):
+    try:
+        payload_b64, signature = token.split("::")
+
+        expected = hmac.new(
+            SECRET_KEY.encode(),
+            payload_b64.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        if not hmac.compare_digest(expected, signature):
+            return None
+
+        payload = json.loads(
+            base64.urlsafe_b64decode(payload_b64.encode()).decode()
+        )
+
+        if payload["exp"] < time.time():
+            return None
+ 
+        return payload
+
+    except Exception:
+        return None
+
+
+# ---------------- MODELS ----------------
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     google_id = db.Column(db.String(255), unique=True)
     email = db.Column(db.String(255), unique=True)
+    password = db.Column(db.String(1012), nullable=True)
     name = db.Column(db.String(255))
+    tkv = db.Column(db.String(50), default=lambda: gen_id("TK", 10))
+    email_method = db.Column(db.Boolean, default=False)
+    google_method = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
 
 
 class Submission(db.Model):
-    id = db.Column(db.String(20), primary_key=True, default=gen_id)
+    id = db.Column(db.String(20), primary_key=True, default=lambda: gen_id("SUB", 10))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     title = db.Column(db.String(500))
     abstract = db.Column(db.Text)
     pdf_url = db.Column(db.String(500))
-    status = db.Column(db.String(50), default="Pending Review")
+    status = db.Column(db.String(50), default="Pending")
 
 
 with app.app_context():
     db.create_all()
 
 
-# HOME
+# ---------------- HELPERS ----------------
+
+def get_current_user():
+    token = request.headers.get("Authorization")
+    if not token:
+        return None
+
+    payload = verify_token(token)
+    if not payload:
+        return None
+
+    user = User.query.get(payload["user_id"])
+    if not user:
+        return None
+
+    if user.tkv != payload["tkv"]:
+        return None
+
+    return user
+
+
+# ---------------- ROUTES ----------------
+
 @app.route("/")
 def home():
     return jsonify({"message": "Tunu Journal API running"})
 
 
-# GOOGLE LOGIN
-@app.route("/login")
+@app.route('/api/register')
+def api_register():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"error":''})
+    return jsonify({'msg':'Registered sucessfully. Redirecting to Login'}), 200
+
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    
+    if not email or not password:
+        return jsonify({'error':'All fields are required'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error':'Invalid credentials'}), 401
+    
+    if user.google_method and not user.email_method or not user.password or user.google_id:
+        return jsonify({'error':'Invalid login method; Login using Google'}), 400
+    
+    user.tkv = gen_id("TK", 10)
+    db.session.commit()
+
+    token = generate_token(user.id, user.tkv)
+
+    payload = {
+        "name": user.name,
+        "email": user.email,
+        "token": token
+    }
+
+    # encoded = base64.urlsafe_b64encode(
+    #     json.dumps(payload).encode()
+    # ).decode()
+
+    return jsonify(payload), 200  
+    
+
+@app.route("/google/login")
 def login():
     flow = Flow.from_client_secrets_file(
         GOOGLE_CLIENT_SECRETS_FILE,
@@ -77,25 +214,27 @@ def login():
         redirect_uri=url_for("callback", _external=True)
     )
 
-    auth_url, state = flow.authorization_url(prompt="consent")
-
-    session["state"] = state
-
+    auth_url, _ = flow.authorization_url(prompt="consent")
     return redirect(auth_url)
 
+@app.route('/uploads/usercontent/<filename>')
+def get_file(filename):
+    download = request.args.get('download')
+    filename = secure_filename(filename)    
+    if download:
+        return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment=True)
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 # GOOGLE CALLBACK
-@app.route("/callback")
+@app.route("/google/callback")
 def callback():
     flow = Flow.from_client_secrets_file(
         GOOGLE_CLIENT_SECRETS_FILE,
         scopes=SCOPES,
-        state=session["state"],
         redirect_uri=url_for("callback", _external=True)
     )
 
     flow.fetch_token(authorization_response=request.url)
-
     credentials = flow.credentials
 
     user_info = requests.get(
@@ -110,29 +249,42 @@ def callback():
     user = User.query.filter_by(google_id=google_id).first()
 
     if not user:
-        user = User(google_id=google_id, email=email, name=name)
+        user = User(
+            google_id=google_id,
+            email=email,
+            name=name,
+            tkv=gen_id("TK", 10)
+        )
         db.session.add(user)
         db.session.commit()
 
-    session["user_id"] = user.id
+    user.tkv = gen_id("TK", 10)
+    db.session.commit()
 
-    # send back to frontend (CORS friendly flow)
-    return jsonify({
-        "message": "login successful",
-        "user": {
-            "name": name,
-            "email": email
-        }
-    })
+    token = generate_token(user.id, user.tkv)
+
+    payload = {
+        "name": user.name,
+        "email": user.email,
+        "token": token
+    }
+
+    encoded = base64.urlsafe_b64encode(
+        json.dumps(payload).encode()
+    ).decode()
+
+    return redirect(
+        f"http://127.0.0.1:5500/dashboard/?params={encoded}"
+    )
 
 
 # CURRENT USER
 @app.route("/me")
 def me():
-    if "user_id" not in session:
-        return jsonify({"error": "not logged in"}), 401
+    user = get_current_user()
 
-    user = User.query.get(session["user_id"])
+    if not user:
+        return jsonify({"error": "invalid token"}), 401
 
     return jsonify({
         "name": user.name,
@@ -140,12 +292,13 @@ def me():
     })
 
 
-# SUBMIT ARTICLE (CORS READY)
+# SUBMIT
 @app.route("/submit", methods=["POST"])
 def submit():
+    user = get_current_user()
 
-    if "user_id" not in session:
-        return jsonify({"error": "login required"}), 401
+    if not user:
+        return jsonify({"error": "invalid token"}), 401
 
     title = request.form.get("title")
     abstract = request.form.get("abstract")
@@ -154,12 +307,12 @@ def submit():
     if not file:
         return jsonify({"error": "pdf required"}), 400
 
-    filename = secure_filename(gen_id() + ".pdf")
+    filename = secure_filename(gen_id('SUB', 20) + ".pdf")
     path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     file.save(path)
 
     submission = Submission(
-        user_id=session["user_id"],
+        user_id=user.id,
         title=title,
         abstract=abstract,
         pdf_url=path
@@ -174,14 +327,53 @@ def submit():
     })
 
 
-# USER SUBMISSIONS
+@app.route('/admin/submissions', methods=['GET'])
+def get_submissions():
+    """Fetches all submissions joined with user email."""
+    # Query all submissions
+    submissions = Submission.query.all()
+    
+    # Serialize data
+    results = []
+    for sub in submissions:
+        # Accessing the related user to get the email
+        author = User.query.get(sub.user_id)
+        email = author.email if author else "Unknown"
+        
+        results.append({
+            "id": sub.id,
+            "author_email": email,
+            "title": sub.title,
+            "status": sub.status,
+            "pdf_url": sub.pdf_url
+        })
+    return jsonify(results)
+
+@app.route('/admin/update/<submission_id>', methods=['POST'])
+def update_submission(submission_id):
+    """Updates the status of a specific manuscript submission."""
+    data = request.json
+    new_status = data.get('status')
+    
+    # Find the submission in the database
+    submission = Submission.query.get(submission_id)
+    
+    if submission:
+        submission.status = new_status
+        db.session.commit() # Save changes
+        return jsonify({"message": "Status updated successfully", "status": new_status}), 200
+    
+    return jsonify({"message": "Submission not found"}), 404
+
+# MY SUBMISSIONS
 @app.route("/my-submissions")
 def my_submissions():
+    user = get_current_user()
 
-    if "user_id" not in session:
-        return jsonify({"error": "login required"}), 401
+    if not user:
+        return jsonify({"error": "invalid token"}), 401
 
-    items = Submission.query.filter_by(user_id=session["user_id"]).all()
+    items = Submission.query.filter_by(user_id=user.id).all()
 
     return jsonify([
         {
@@ -194,11 +386,10 @@ def my_submissions():
     ])
 
 
-# LOGOUT
+# LOGOUT (CLIENT SIDE ONLY)
 @app.route("/logout")
 def logout():
-    session.clear()
-    return jsonify({"message": "logged out"})
+    return jsonify({"message": "delete token on client"})
 
 
 if __name__ == "__main__":

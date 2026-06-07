@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBOARD | THE TUNU JOURNAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/resources/base/base.js"></script>
+    <style>
+        :root { --paper: #f9f7f2; --ink: #1a1a1a; --border: #d4d4d4; }
+        * { padding: 0; margin: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', serif; background: #f0f0f0; padding: 40px; color: var(--ink); }
+        .card { background: white; padding: 40px; max-width: 900px; margin: auto; border: 1px solid var(--border); margin-bottom: 20px; }
+        h1, h2 { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .data-item { margin: 10px 0; font-size: 1.1rem; }
+        .label { font-weight: bold; font-family: sans-serif; text-transform: uppercase; font-size: 0.8rem; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+        th { background: #f9f9f9; font-family: sans-serif; font-size: 0.8rem; text-transform: uppercase; }
+        .btn { display: inline-block; margin-top: 20px; background: var(--ink); color: white; padding: 10px 20px; text-decoration: none; text-transform: uppercase; font-size: 0.9rem; border: none; cursor: pointer; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border); font-family: 'Georgia', serif; }
+
+        .sub-actions{
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>AUTHOR DASHBOARD</h1>
+        <div id="user-info">
+            <div class="data-item"><span class="label">Name:</span> <span id="name"></span></div>
+            <div class="data-item"><span class="label">Email:</span> <span id="email"></span></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Submit New Manuscript</h2>
+        <form id="uploadForm">
+            <input type="text" id="title" placeholder="Manuscript Title" required>
+            <textarea id="abstract" placeholder="Abstract" rows="4" required></textarea>
+            <input type="file" id="pdf" accept="application/pdf" required>
+            <button type="submit" class="btn">Upload Manuscript</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>My Submissions</h2>
+        <table id="submissions-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="submission-list"></tbody>
+        </table>
+
+        <a href="/" class="btn"><i class="fas fa-home"></i> Back to Archive</a>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const params = urlParams.get('params');
+
+        async function initDashboard() {
+            if (!params) return window.location.href = '/login';
+            
+            try {
+                const decoded = JSON.parse(atob(params.replace(/-/g, '+').replace(/_/g, '/')));
+                document.getElementById('name').innerText = decoded.name;
+                document.getElementById('email').innerText = decoded.email;
+
+                window.token = decoded.token
+                
+                loadSubmissions();
+            } catch (e) {
+                document.body.innerHTML = '<h1>Session Error</h1>';
+            }
+        }
+        
+
+        async function loadSubmissions() {
+            const res = await fetch(`${API_URL}/my-submissions`,{
+                headers:{
+                    'Authorization': window.token
+                }
+
+            });
+            const subs = await res.json();
+            const list = document.getElementById('submission-list');
+            list.innerHTML = subs.map(s => `
+                <tr>
+                    <td>${s.id}</td>
+                    <td>${s.title}</td>
+                    <td>${s.status}</td>
+                    <td class="sub-actions">
+                        <a href="${API_URL}/${s.pdf_url}?download=true" download="${String(s.title).replaceAll(' ', '_')}.pdf" target="_blank"> <i class="fas fa-cloud-download" ></i></a>
+                        <a href="${API_URL}/${s.pdf_url}" target="_blank"> <i class="fas fa-eye"></i></a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('uploadForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('abstract', document.getElementById('abstract').value);
+            formData.append('pdf', document.getElementById('pdf').files[0]);
+
+            const res = await fetch(`${API_URL}/submit`, { method: 'POST', body: formData , headers:{
+                'Authorization':window.token
+            }});
+            const data = await res.json();
+            alert(data.message || 'Submission successful');
+            loadSubmissions();
+            e.target.reset();
+        };
+
+        initDashboard();
+    </script>
+</body>
+</html>
