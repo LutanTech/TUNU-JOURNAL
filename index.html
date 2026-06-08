@@ -533,7 +533,7 @@
             flex-grow: 1;
             display: flex;
             min-width: 150px;
-            margin-bottom: 10px;
+            margin-bottom: 40px;
             justify-content: center;
             align-items: center;
             font-size: larger;
@@ -604,7 +604,7 @@
             </div>
         </div>
         <div>
-            <button class="loginBtn" onclick="window.location.href ='/login'"> <i class="fas fa-sign-in-alt"></i> Login</button>
+            <button class="loginBtn" onclick="window.location.href ='/login'"> <i class="fas fa-sign-in-alt"></i> Submit Manuscript</button>
         </div>
 
         <form class="notify-form" id="notify-form">
@@ -652,8 +652,8 @@
     </footer>
 
     <script>
-        const targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 9);
+        const targetDate = new Date("June 30, 2026 24:00:00");
+        targetDate.setDate(targetDate.getDate());
 
         function updateCountdown() {
             const now = new Date().getTime();
