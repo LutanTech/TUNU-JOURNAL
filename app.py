@@ -458,3 +458,6 @@ def my_submissions():
 @app.route("/logout")
 def logout():
     return jsonify({"message": "delete token on client"})
+
+if name == '__main__':
+    app.run(debug=True)

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE TUNU JOURNAL | Archival Repository</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,es,fr,de,zh-CN,ar',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <style>
+        :root {
+            --paper: #f9f7f2;
+            --ink: #1a1a1a;
+            --accent: #2c3e50;
+            --border: #d4d4d4;
+            --header-bg: #1e293b;
+            --card-bg: #ffffff;
+            --modal-bg: rgba(0, 0, 0, 0.6);
+            --gold: #c5a059;
+        }
+
+        body.dark-theme {
+            --paper: #121212;
+            --ink: #e0e0e0;
+            --accent: #c5a059;
+            --border: #333333;
+            --header-bg: #0f172a;
+            --card-bg: #1e1e1e;
+            --modal-bg: rgba(0, 0, 0, 0.85);
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .header {
+            background: var(--header-bg);
+            color: #fff;
+            padding: 40px;
+            border-bottom: 4px solid var(--gold);
+            background-image: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            opacity: 0.05;
+            background-image: radial-gradient(circle, #fff 10%, transparent 10.5%);
+            background-size: 15px 15px;
+            pointer-events: none;
+        }
+
+        .tunu-desc { 
+            display: flex; 
+            align-items: center; 
+            gap: 24px; 
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tunu-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            color: var(--gold);
+            font-size: 2rem;
+        }
+
+        .tunu-name h1 { 
+            font-size: 2.2rem; 
+            letter-spacing: 0.04em; 
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .tunu-name p { 
+            font-family: sans-serif; 
+            font-size: 0.75rem; 
+            letter-spacing: 0.25em; 
+            opacity: 0.8; 
+            color: var(--gold);
+            margin-top: 4px;
+        }
+
+        #google_translate_element {
+            margin-top: 10px;
+        }
+
+        .nav {
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            color: var(--ink);
+            text-decoration: none;
+            padding: 20px 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-right: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .nav-item:hover { 
+            background: rgba(0, 0, 0, 0.05); 
+        }
+        body.dark-theme .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: fixed;
+            z-index: 2000;
+            top: 15px;
+            color: var(--ink);
+            right: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+        }
+
+        main { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+
+        .intro { 
+            font-size: 1.25rem; 
+            margin-bottom: 40px; 
+            border-left: 4px solid var(--gold); 
+            padding-left: 20px; 
+            font-style: italic;
+            color: var(--ink);
+            opacity: 0.9;
+        }
+
+        .search-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 60px;
+        }
+
+        .search-area input {
+            flex-grow: 1;
+            background: var(--card-bg);
+            color: var(--ink);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 20px;
+        }
+
+        input, button {
+            font-family: 'Georgia', serif;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            outline: none;
+        }
+
+        button {
+            background: var(--ink);
+            color: var(--paper);
+            cursor: pointer;
+            border: 1px solid var(--ink);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 40px; 
+        }
+
+        @media (min-width: 992px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            display: flex;
+            border: 1px solid var(--border);
+            padding: 30px;
+            gap: 30px;
+            border-radius: 4px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .card-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-image svg {
+            width: 120px;
+            height: 160px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-content h3 { 
+            font-size: 1.5rem; 
+            margin-bottom: 10px; 
+            color: var(--accent); 
+            line-height: 1.2;
+        }
+        .card-content p { 
+            margin-bottom: 20px; 
+            color: var(--ink);
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .btn-link {
+            align-self: flex-start;
+            display: inline-block;
+            border: 1px solid var(--ink);
+            color: var(--ink);
+            padding: 8px 16px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .btn-link:hover { background: var(--ink); color: var(--paper); }
+
+        footer {
+            background: var(--card-bg);
+            padding: 60px 40px 30px 40px;
+            border-top: 4px solid var(--ink);
+            margin-top: 80px;
+            transition: background-color 0.3s ease;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-col h4 { font-family: sans-serif; text-transform: uppercase; margin-bottom: 20px; font-size: 0.9rem; color: var(--gold); letter-spacing: 1px; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 10px; font-size: 0.9rem; }
+        .footer-col a { color: var(--ink); opacity: 0.8; text-decoration: none; transition: opacity 0.2s; }
+        .footer-col a:hover { text-decoration: underline; opacity: 1; }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--card-bg);
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.active { display: flex; }
+            .nav-item { border-right: none; border-bottom: 1px solid var(--border); width: 100%; }
+            .card { flex-direction: column; }
+            .card-image svg { width: 100px; height: 140px; }
+            .tunu-desc{
+                flex-direction: column;
+                gap: 12px;
+            }
+            .tunu-name{
+                text-align: center;
+            }
+            .tunu-logo {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+        }
+
+        .bottom-div{
+            width: 100%;
+            padding: 30px;
+            border-top: 1px solid var(--border);
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            font-size: 0.8rem;
+            color: var(--ink);
+            opacity: 0.6;
+            background: var(--card-bg);
+            transition: background-color 0.3s ease;
+        }
+
+        .search-overlay{
+            background: var(--paper);
+            width:100%;
+            height: 100vh;
+            position: fixed;
+            top: -100%;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items:flex-start;
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .search-form{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 200px auto;
+        }
+        .search-content{
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            position: relative;
+        }
+        .searchInput{
+            width: 100% ;
+            background: var(--card-bg);
+            color: var(--ink);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+        }
+        #closeSearch{
+            background: transparent;
+            color: #ff4d4d;
+            font-size: 2.5rem;
+            padding: 5px;
+            position: absolute;
+            right: 30px;
+            top: -50px;
+            border: 0;
+            cursor: pointer;
+        }
+        #closeSearch:active{
+            scale: 0.9;
+        }
+        .searchBtn{
+            background: var(--ink);
+            color: var(--paper);
+            border: 1px solid var(--ink);
+            border-radius: 4px;
+            padding: 15px 25px;
+            margin-left: 10px;
+            transition: all 0.15s ease-in-out;
+        }
+        .searchBtn:active{
+            scale: 0.95;
+        }
+        .search-overlay.appear{
+            display: flex;
+            opacity: 1;
+            top: 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--modal-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--ink);
+            opacity: 0.5;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            opacity: 1;
+        }
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: var(--accent);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--ink);
+            opacity: 0.8;
+        }
+        .form-group input {
+            width: 100%;
+            background: var(--paper);
+            color: var(--ink);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        .form-actions label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .form-actions a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .form-actions a:hover {
+            text-decoration: underline;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            font-family: sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--gold);
+            border: 1px solid var(--gold);
+            color: #ffffff;
+            border-radius: 4px;
+        }
+        .btn-submit:hover {
+            background: var(--ink);
+            border-color: var(--ink);
+        }
+        .modal-notice {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--ink);
+            opacity: 0.7;
+        }
+        .modal-notice a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-content">
+            <button id="closeSearch">&times;</button>
+            <div class="search-form">
+                <input type="search" placeholder="Search Journals, Issues, Volumes, etc..." id="query" class="searchInput">
+                <button class="searchBtn" id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="login-close">&times;</button>
+            <h2 class="modal-title">Archival Sign In</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Scholar Email / ID</label>
+                    <input type="text" id="username" required placeholder="name@institution.edu">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <div class="form-actions">
+                    <label><input type="checkbox"> Remember active session</label>
+                    <a href="#" id="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-submit">Authenticate Credentials</button>
+            </form>
+            <p class="modal-notice">Need institutional access? <a href="#">Register here</a></p>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="tunu-desc">
+            <div class="tunu-logo">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="tunu-name">
+                <h1>THE TUNU JOURNAL</h1>
+                <p>ARCHIVAL REPOSITORY OF SCHOLARLY WORKS</p>
+                <div id="google_translate_element"></div>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="nav">
+        <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+        <div class="nav-links" id="nav-links">
+            <a class="nav-item" href="#"><i class="fas fa-home"></i> HOME</a>
+            <a class="nav-item" href="#"><i class="fas fa-scroll"></i> ARCHIVES</a>
+            <a class="nav-item" href="#"><i class="fas fa-users"></i> FACULTY</a>
+            <a class="nav-item" href="#"><i class="fas fa-pen-nib"></i> AUTHORS</a>
+            <a class="nav-item" id="nav-search-trigger"><i class="fas fa-search"></i> SEARCH</a>
+            <a class="nav-item" id="theme-toggle"><i class="fas fa-circle-half-stroke"></i> THEME</a>
+            <a class="nav-item" id="login-trigger" style="margin-left: auto; border-left: 1px solid var(--border);"><i class="fas fa-user-lock"></i> LOGIN</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="intro">
+            An established repository for the dissemination of peer-reviewed research and scholarly inquiry. Dedicated to the preservation of intellectual rigor.
+        </section>
+
+        <div class="search-area">
+            <input type="text" id="main-search-input" placeholder="Search volumes and scholarly articles...">
+            <button id="main-search-btn">SEARCH ARCHIVE</button>
+        </div>
+
+        <section class="grid" id="journal-grid"></section>
+    </main>
+
+    <footer id="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">Mission Statement</a></li>
+                    <li><a href="#">Editorial Board</a></li>
+                    <li><a href="#">Peer Review Policy</a></li>
+                    <li><a href="#">Open Access Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Submission Guidelines</a></li>
+                    <li><a href="#">Citation Style Guide</a></li>
+                    <li><a href="#">Library Support</a></li>
+                    <li><a href="#">Contact Archives</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms of Use</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Copyright Notices</a></li>
+                    <li><a href="#">Institutional Licenses</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#">Institutional Twitter</a></li>
+                    <li><a href="#">Academic RSS Feeds</a></li>
+                    <li><a href="#">Newsletter Sign-up</a></li>
+                    <li><a href="#">Developer API</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    
+    <div class="bottom-div">
+        &copy; 2026 TUNU PUBLISHERS. All Rights Reserved
+    </div>
+
+    <script>
+        const journals = [
+            { title: "The Art of Mindful Journaling", desc: "Examination of reflexive writing as a tool for cognitive clarity.", subject: "Reflexive Psychology" },
+            { title: "Design & Instrumentation", desc: "Treatise on writing paradigms and archival integrity.", subject: "System Design" },
+            { title: "Quantum Sociology", desc: "Analyzing social structures through probabilistic frameworks.", subject: "Theoretical Sociology" },
+            { title: "Urban Ecology Theory", desc: "Case studies on sustainable architecture in mega-cities.", subject: "Environmental Design" },
+            { title: "Linguistic Anthropology", desc: "Preservation of endangered dialects in the modern era.", subject: "Cultural Studies" },
+            { title: "Computational Ethics", desc: "Algorithmic bias and decision-making in autonomous systems.", subject: "AI Ethics" },
+            { title: "Classical Aesthetics", desc: "Reinterpreting Hellenistic beauty in contemporary media.", subject: "Fine Art Philosophy" },
+            { title: "Macroeconomic Shifts", desc: "Longitudinal study of global financial volatility.", subject: "Macroeconomics" },
+            { title: "Biomimetic Materials", desc: "Engineering solutions modeled after natural biological structures.", subject: "Material Sciences" },
+            { title: "Neuro-Cognitive Learning", desc: "Impact of digital consumption on attention span.", subject: "Neurology" },
+            { title: "Historical Cartography", desc: "Techniques in map reconstruction and topographical accuracy.", subject: "Geography" },
+            { title: "Theoretical Physics Review", desc: "Consolidated volume on string theory developments.", subject: "Theoretical Physics" }
+        ];
+
+        const journalGrid = document.getElementById('journal-grid');
+
+        function renderJournals(list) {
+            journalGrid.innerHTML = list.map(j => `
+                <article class="card">
+                    <div class="card-image">
+                        <svg viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="100" height="140" fill="#1e293b"/>
+                            <rect x="5" y="5" width="90" height="130" fill="none" stroke="#c5a059" stroke-width="1.5"/>
+                            <text x="50%" y="45" font-family="'Georgia', serif" font-size="6" fill="#f9f7f2" text-anchor="middle" font-weight="bold">THE TUNU</text>
+                            <text x="50%" y="55" font-family="'Georgia', serif" font-size="7" fill="#f9f7f2" text-anchor="middle" font-weight="bold">JOURNAL</text>
+                            <line x1="20" y1="70" x2="80" y2="70" stroke="#c5a059" stroke-width="1"/>
+                            <text x="50%" y="90" font-family="sans-serif" font-size="5" fill="#c5a059" text-anchor="middle" letter-spacing="1">${j.subject ? j.subject.toUpperCase() : 'SCHOLARLY WORK'}</text>
+                            <rect x="42" y="110" width="16" height="16" fill="none" stroke="#c5a059" stroke-width="0.5"/>
+                            <text x="50%" y="120" font-family="'Georgia', serif" font-size="8" fill="#c5a059" text-anchor="middle">T</text>
+                        </svg>
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <h3>${j.title}</h3>
+                            <p>${j.desc}</p>
+                        </div>
+                        <a href="#" class="btn-link">VIEW VOLUME</a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        renderJournals(journals);
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+        });
+
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchTrigger = document.getElementById('nav-search-trigger');
+        const closeSearch = document.getElementById('closeSearch');
+        const searchInput = document.getElementById('query');
+        const searchBtn = document.getElementById('searchBtn');
+
+        function openSearchOverlay() {
+            searchOverlay.classList.add('appear');
+            searchInput.focus();
+        }
+
+        function closeSearchOverlay() {
+            searchOverlay.classList.remove('appear');
+        }
+
+        searchTrigger.addEventListener('click', openSearchOverlay);
+        closeSearch.addEventListener('click', closeSearchOverlay);
+
+        function handleSearch(query) {
+            const filtered = journals.filter(j => 
+                j.title.toLowerCase().includes(query.toLowerCase()) || 
+                j.desc.toLowerCase().includes(query.toLowerCase())
+            );
+            renderJournals(filtered);
+            closeSearchOverlay();
+            document.querySelector('main').scrollIntoView();
+        }
+
+        searchBtn.addEventListener('click', () => {
+            handleSearch(searchInput.value);
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch(searchInput.value);
+            }
+        });
+
+        const mainSearchInput = document.getElementById('main-search-input');
+        const mainSearchBtn = document.getElementById('main-search-btn');
+
+        mainSearchBtn.addEventListener('click', () => {
+            handleSearch(mainSearchInput.value);
+        });
+
+        mainSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSearch(mainSearchInput.value);
+            }
+        });
+
+        const loginModal = document.getElementById('login-modal');
+        const loginTrigger = document.getElementById('login-trigger');
+        const loginClose = document.getElementById('login-close');
+        const loginForm = document.getElementById('login-form');
+
+        loginTrigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.classList.add('active');
+        });
+
+        loginClose.addEventListener('click', () => {
+            loginModal.classList.remove('active');
+        });
+
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.remove('active');
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            loginModal.classList.remove('active');
+            const submitBtn = loginForm.querySelector('.btn-submit');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = "Authorized";
+            submitBtn.style.background = "#2e7d32";
+            submitBtn.style.borderColor = "#2e7d32";
+            loginTrigger.innerHTML = `<i class="fas fa-user-circle"></i> ACCOUNT`;
+        });
+    </script>
+</body>
+</html>

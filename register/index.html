@@ -3,293 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN | THE TUNU JOURNAL</title>
+    <title>REGISTER | THE TUNU JOURNAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/resources/base/base.js"></script>
     <style>
-        :root { --paper: #f9f7f2; --ink: #1a1a1a; --border: #d4d4d4; }
-        * { padding: 0px; margin: 0; box-sizing: border-box; }
+        :root {
+            --paper: #f9f7f2;
+            --ink: #1a1a1a;
+            --border: #d4d4d4;
+            --gold: #c5a059;
+            --accent: #2c3e50;
+            --card-bg: #ffffff;
+            --success-color: #2e7d32;
+            --success-bg: rgba(46, 125, 50, 0.1);
+            --error-color: #c62828;
+            --error-bg: rgba(198, 40, 40, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #121212;
+                --ink: #e0e0e0;
+                --border: #333333;
+                --card-bg: #1e1e1e;
+                --accent: #c5a059;
+            }
+        }
+
+        * { 
+            padding: 0px; 
+            margin: 0; 
+            box-sizing: border-box; 
+        }
+
         body {
             width: 100%;
-            height: 100vh;
-            background: #f0f0f0;
+            min-height: 100vh;
+            background: var(--paper);
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Georgia', serif;
+            color: var(--ink);
+            padding: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         #loginForm {
-            background: white;
-            padding: 40px;
+            background: var(--card-bg);
+            padding: 28px 24px; /* Matches tight, high-density login.html padding */
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            width: 95%;
-            max-width: 500px;
+            flex-direction: column;
+            gap: 14px; /* Compact, crisp layout structure */
+            width: 100%;
+            max-width: 370px; /* Matches the exact narrow layout format of login.html */
             border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
-        .logo img{
-            margin: 10px auto;
-            background: rgb(233, 233, 233);
-            object-fit: contain;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
+
+        .logo-cont {
+            width: 100%;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            background: rgba(197, 160, 89, 0.08);
+            border: 1.5px solid var(--gold);
+            border-radius: 50%;
+            width: 50px; 
+            height: 50px;
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin: 0 auto 10px auto;
         }
-        .input-field { position: relative; width: 100%; }
-        .inp-icon { position: absolute; top: 12px; left: 10px; color: #666; }
+
+        .journal-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            color: var(--ink);
+        }
+
+        .divider {
+            margin: 10px 0;
+            border: none;
+            border-top: 1px solid var(--border);
+        }
+
+        .register-tag {
+            font-family: sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            color: var(--gold);
+            margin-bottom: 2px;
+        }
+
+        .input-field { 
+            position: relative; 
+            width: 100%; 
+        }
+
+        .inp-icon { 
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%);
+            left: 12px; 
+            color: var(--ink);
+            opacity: 0.5;
+            font-size: 0.9rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .inp {
+            width: 100%;
+        }
+
         .inp input {
             width: 100%;
-            padding: 12px 12px 12px 35px;
+            padding: 11px 12px 11px 36px; /* High-density input elements */
+            background: var(--paper);
+            color: var(--ink);
             border: 1px solid var(--border);
+            border-radius: 3px;
             outline: none;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
-        .inp input:focus { outline: 1px solid var(--ink); }
+
+        .inp input:focus { 
+            border-color: var(--gold);
+            background: var(--card-bg);
+        }
+
+        .inp input:focus + .inp-icon {
+            opacity: 1;
+            color: var(--gold);
+        }
+
+        .logo-img{
+            height: 50px;
+            border-radius: 50%;
+        }
+
         .btn {
             background: var(--ink);
-            color: white;
-            padding: 12px;
+            color: var(--paper);
+            padding: 11px; /* Trimmed button heights */
             width: 100%;
-            border: none;
+            border: 1px solid var(--ink);
+            border-radius: 3px;
             cursor: pointer;
             text-transform: uppercase;
             font-family: sans-serif;
             font-weight: 600;
-            margin: 0;
-        }
-        .btn:active { transform: scale(0.98); }
-        .eye { position: absolute; top: 12px; right: 10px; cursor: pointer; color: #666; }
-        .footer { margin-top: 20px; text-align: center; font-size: 0.8rem; color: #666; border-top: 1px solid var(--border); padding-top: 15px; }
-
-        .page-links{
-            display: flex;
-            justify-content: space-between;
-            a{font-size: small;
-            color: rgb(0, 162, 255);}
-            margin: 10px 0;
-        }
-        .google-btn{
-            text-align: center;
-            text-decoration: none;
-            font-size: small;
-            text-transform: none;
-            display: flex;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            display: inline-flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            background: white;
-            border: 1px solid black;
-            color: black;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #fff;
+        }
+
+        .btn:active { 
+            transform: scale(0.98); 
+        }
+
+        .eye { 
+            position: absolute; 
+            top: 50%;
+            transform: translateY(-50%);
+            right: 12px; 
+            cursor: pointer; 
+            color: var(--ink);
+            opacity: 0.5;
+            padding: 4px;
+            font-size: 0.95rem;
+        }
+        .eye:hover {
+            opacity: 1;
+        }
+
+        .page-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-top: 2px;
+        }
+
+        .google-btn {
+            text-decoration: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--ink);
             user-select: none;
         }
-        :disabled{
-            background: grey !important;
-            cursor: progress;
+        .google-btn:hover {
+            background: var(--paper);
+            border-color: var(--ink);
+            color: var(--ink);
+        }
 
+        button:disabled, a.btn:disabled {
+            background: #888888 !important;
+            border-color: #888888 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
-        .alertDiv{
+
+        .alertDiv {
             gap: 10px;
-            padding: 5px;
-            border: 1px solid rgba(0, 0, 0, 0.122);
-            font-size: small;
+            padding: 9px 12px;
+            border-radius: 3px;
+            font-size: 0.8rem;
             display: none;
-            margin: auto;
+            align-items: center;
             width: 100%;
+            font-family: sans-serif;
+            line-height: 1.3;
         }
-        .show{
+
+        .alertDiv.show {
             display: flex;
         }
-        .error{
-            color: white;
-            background: rgb(255, 0, 0);
+
+        .alertDiv.error {
+            color: var(--error-color);
+            background: var(--error-bg);
+            border: 1px solid var(--error-color);
         }
-        .success{
-            color: rgb(0, 0, 0);
-            background: rgba(0, 255, 0, 0.355);
+
+        .alertDiv.success {
+            color: var(--success-color);
+            background: var(--success-bg);
+            border: 1px solid var(--success-color);
         }
-        .alertIcon{
-            animation: swing 1s infinite;
+
+        .alertIcon {
+            font-size: 1rem;
         }
+        
+        .alertDiv.error .alertIcon {
+            animation: swing 0.6s ease;
+        }
+
         @keyframes swing {
-            40%{
-                rotate: 40deg;
-            }
-            70%{
-                rotate: -40deg;
-            }
-            80%{
-                rotate: 20deg;
-            }
-            
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(12deg); }
+            40% { transform: rotate(-12deg); }
+            60% { transform: rotate(8deg); }
+            80% { transform: rotate(-8deg); }
         }
-        .fields{
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            gap: 10px;
+
+        .footer { 
+            margin-top: 14px; 
+            text-align: center; 
+            font-size: 0.7rem; 
+            color: var(--ink);
+            opacity: 0.5;
+            border-top: 1px solid var(--border); 
+            padding-top: 12px; 
+            font-family: sans-serif;
         }
-        .f-4{
-            width: 100%;
-            margin: auto;
-        }
-        .logo-cont{
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        @media (max-width:500px) {
-            .f-1{
-                flex-direction: column;
+
+        @media (max-width: 400px) {
+            #loginForm {
+                padding: 22px 18px;
             }
-            
         }
     </style>
 </head>
 <body>
     <form id="loginForm">
         <div class="logo-cont">
-        <div class="logo">
-            <img src="/assets/icons/icon.png" alt="">
+            <div class="logo">
+                <img class="logo-img" src="/assets/icons/icon.png" alt="">
+            </div>
+            <div class="journal-title">THE TUNU JOURNAL</div>
+            <hr class="divider">
+            <div class="register-tag">Academic Register</div>
         </div>
-        <div style="text-align:center; font-weight:bolder; letter-spacing: 0.1em;">THE TUNU JOURNAL</div>
-        <hr style="margin: 10px 0;">
-        <div style="text-align:center; font-weight:bolder">Register</div>
-        </div>
-        <div class="alertDiv error">
-            <div class="alertIcon">
+
+        <div class="alertDiv" id="alert-box">
+            <div class="alertIcon" id="alert-icon">
                 <i class="fas fa-bell"></i>
             </div>
-            <div class="alertText">
+            <div class="alertText" id="alert-text">
                 All fields are required
             </div>
         </div>
 
-        <div class="fields f-1">
-
         <div class="input-field">
-            <i class="fas fa-user-circle inp-icon"></i>
-            <div class="inp"><input type="text" id="name" placeholder="Your Name" required></div>
+            <div class="inp">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <i class="fas fa-user-circle inp-icon"></i>
+            </div>
         </div>
 
         <div class="input-field">
-            <i class="fas fa-envelope inp-icon"></i>
-            <div class="inp"><input type="text" id="email" placeholder="Email Address" required></div>
+            <div class="inp">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <i class="fas fa-envelope inp-icon"></i>
+            </div>
         </div>
 
-    </div>
-    <div class="fields f-2">
-
         <div class="input-field">
-            <i class="fas fa-lock inp-icon"></i>
-            <div class="inp"><input type="password" id="password" placeholder="Password" required></div>
-            <div class="eye"><i class="fas fa-eye"></i></div>
+            <div class="inp">
+                <input type="password" id="password" placeholder="Secure Password" required>
+                <i class="fas fa-lock inp-icon"></i>
+            </div>
+            <div class="eye" id="password-toggle"><i class="fas fa-eye"></i></div>
         </div>
         
-    </div>
-        <button class="btn submit" type="submit">
-            <i style="margin-right: 10px;" class="fas fa-user-plus"></i>            
-            Register</button>
-            <div class="fields f-4">
+        <button class="btn submit" type="submit" id="submit-btn">
+            <i class="fas fa-user-plus"></i>            
+            Register
+        </button>
 
-            <a class="btn google-btn" href="/google/login" type="button">
-                <i style="color: orangered;" class="fab fa-google"></i>
-                Continue with Google</a>
-            <a class="btn google-btn" href="/login" type="button">
-                    <i style="color: orangered;" class="fas fa-sign-in-alt"></i>
-                    Already have an account? Login
+        <div class="page-links">
+            <a class="btn google-btn" href="/google/login/" id="google-btn">
+                <i class="fab fa-google" style="color: #ea4335;"></i>
+                Continue with Google
             </a>
-    </div>
+            <a class="btn google-btn" href="/login/" id="login-redirect">
+                <i class="fas fa-sign-in-alt" style="color: #c5a059;"></i>
+                Already registered? Sign In
+            </a>
+        </div>
 
-        <div class="footer" style="width: 100%;">
+        <div class="footer">
             Tunu Journal &copy; 2026. All Rights Reserved.
         </div>
     </form>
 
     <script>
-        const eye = document.querySelector('.eye');
-        const inp = document.querySelector('#password');
-        eye.addEventListener('click', () => {
-            inp.type = inp.type === 'password' ? 'text' : 'password';
-            eye.innerHTML = inp.type === 'password' ? '<i class="fas fa-eye">' : '<i class="fas fa-eye-slash">';
+        const passwordToggle = document.getElementById('password-toggle');
+        const passwordInput = document.getElementById('password');
+
+        passwordToggle.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            passwordToggle.innerHTML = isPassword 
+                ? '<i class="fas fa-eye-slash"></i>' 
+                : '<i class="fas fa-eye"></i>';
         });
 
-        document.querySelector('#loginForm').addEventListener('submit', (e) => {
+        function showAlert(type, text) {
+            const alertBox = document.getElementById('alert-box');
+            const alertIcon = document.getElementById('alert-icon');
+            const alertText = document.getElementById('alert-text');
+
+            alertBox.className = 'alertDiv ' + type;
+            
+            if (type === 'error') {
+                alertIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            } else if (type === 'success') {
+                alertIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            } else {
+                alertIcon.innerHTML = '<i class="fas fa-bell"></i>';
+            }
+
+            alertText.textContent = text;
+            alertBox.classList.add('show');
+
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 5000);
+        }
+
+        function isLoading(loading) {
+            const btn = document.getElementById('submit-btn');
+            if (loading) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+            }
+        }
+
+
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value.trim()
-            const name = document.getElementById('name').value.trim()
-            const password = document.querySelector('#password').value.trim()
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = passwordInput.value.trim();
 
-            if(!email || !password || !name){
-                showAlert('error', 'All fields are required')
+            if (!name || !email || !password) {
+                showAlert('error', 'All registration details are required.');
+                return;
             }
-            isLoading(true)
-            fetch(API_URL + '/api/register',{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json'
+
+            isLoading(true);
+
+            const API_ENDPOINT = (window.API_URL) + '/api/register';
+
+            fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                body:JSON.stringify({"email":email, "password":password, "name":name})
+                body: JSON.stringify({ email, password, name })
             })
-            .then(r=>r.json())
-            .then(data=>{
-                isLoading(false)
-                if(data.error){
-                    showAlert('error', data.error)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                isLoading(false);
+                if (data.error) {
+                    showAlert('error', data.error);
+                } else if (data.message) {
+                    showAlert('success', `Welcome to the Archive, ${data.username || name}!`);
+                    window.location.href = '/login'
                 }
-                if(data.token && data.username && data.email){
-                    alert(data)
-                }
             })
-            .catch(err=>{
-                showAlert('error',err.message )
-                isLoading(false)
-            })
+            .catch(err => {
+                setTimeout(() => {
+                    isLoading(false);
+                    showAlert('error', err.message);
+                }, 1200);
+            });
         });
-
-
-        function isLoading(load){
-            const btn = document.querySelector('.submit')
-            if(load){
-                btn.disabled = true
-                btn.innerHTML = `
-                <i class="fas fa-spinner fa-spin"></i>
-                Loading...                
-                `
-            } else{
-                btn.disabled = false
-                btn.innerHTML = `
-                <i class="fas fa-sign-in-alt"></i>
-                Login              
-                `
-            }
-        }
-
-
-
-        function showAlert(type, text){
-            const alertDiv = document.querySelector('.alertDiv')
-            const icon = alertDiv.querySelector('.alertIcon')
-            if(type == 'error'){
-                icon.innerHTML = '<i class="fas fa-warning"></i>'
-            } else{
-                icon.innerHTML = '<i class="fas fa-check-circle"></i>'
-            }
-            if(alertDiv){
-                alertDiv.className = 'alertDiv'
-                alertDiv.classList.add(type)
-                alertDiv.classList.toggle('show')
-                alertDiv.querySelector('.alertText').textContent = text
-                setTimeout(() =>{
-                    alertDiv.classList.toggle('show')
-                }, 5000)
-
-
-            }
-
-        }
     </script>
 </body>
 </html>

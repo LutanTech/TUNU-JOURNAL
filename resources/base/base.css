@@ -1,0 +1,49 @@
+
+.lang-select {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    position: relative;
+    font-size: small;
+    background: white;
+    z-index: 300000;
+    cursor: pointer;
+    width: 100px;
+    text-align: center;
+}
+
+.lang-btns{
+    position: absolute;
+    top: 20px;
+    background: white;
+    box-shadow: 2px 10px 20px rgba(0, 0, 0, 0.197);
+    flex-direction: column;
+    width: 100%;
+}
+.l-p{
+    display: flex;
+    width: 100%;
+    background: rgba(128, 128, 128, 0.37);
+    padding: 2px 20px;
+    font-size: small;
+    cursor: pointer;
+    user-select: none;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+}
+/* Hide Google UI entirely */
+#google_translate_element {
+    display: none !important;
+}
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+.menu-toggle {
+    display: none;
+    padding: 20px;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+}
