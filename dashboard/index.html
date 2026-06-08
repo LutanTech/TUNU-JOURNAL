@@ -84,7 +84,7 @@
             <h2>Submit New Manuscript</h2>
             <form id="uploadForm">
                 <input type="text" id="title" placeholder="Manuscript Title" required>
-                <textarea id="abstract" placeholder="Abstract" rows="4" required></textarea>
+                <!-- <textarea id="abstract" placeholder="Abstract" rows="4" required></textarea> -->
                 <input type="file" id="pdf" accept="application/pdf" required>
                 <button type="submit" class="btn">Upload Manuscript</button>
             </form>
@@ -151,7 +151,7 @@
             e.preventDefault();
             const formData = new FormData();
             formData.append('title', document.getElementById('title').value);
-            formData.append('abstract', document.getElementById('abstract').value);
+            formData.append('abstract', 'No Abstract');
             formData.append('pdf', document.getElementById('pdf').files[0]);
 
             const res = await fetch(`${API_URL}/submit?token=${window.token}`, { method: 'POST', body: formData });
