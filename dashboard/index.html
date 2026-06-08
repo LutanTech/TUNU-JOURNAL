@@ -17,6 +17,12 @@
         * { padding: 0; margin: 0; box-sizing: border-box; }
         body { font-family: 'Georgia', serif; background: #f0ede9; padding-top: 80px; color: var(--ink); line-height: 1.6; }
         
+        #loader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8); display: none; z-index: 9999;
+            align-items: center; justify-content: center; font-size: 2rem;
+        }
+
         header { position: fixed; top: 0; width: 100%; background: white; border-bottom: 1px solid var(--border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         .logo { font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
         .menu-toggle { display: none; cursor: pointer; font-size: 1.2rem; }
@@ -57,6 +63,7 @@
     </style>
 </head>
 <body>
+    <div id="loader-overlay"><i class="fas fa-spinner fa-spin"></i></div>
     <header>
         <div class="logo">The Tunu Journal</div>
         <div class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fas fa-bars"></i></div>
@@ -84,7 +91,6 @@
             <h2>Submit New Manuscript</h2>
             <form id="uploadForm">
                 <input type="text" id="title" placeholder="Manuscript Title" required>
-                <!-- <textarea id="abstract" placeholder="Abstract" rows="4" required></textarea> -->
                 <input type="file" id="pdf" accept="application/pdf" required>
                 <button type="submit" class="btn">Upload Manuscript</button>
             </form>
@@ -103,8 +109,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const params = urlParams.get('params');
         const notifyEl = document.getElementById('notify');
-        
+        const loader = document.getElementById('loader-overlay');
 
+        function toggleLoader(show) { loader.style.display = show ? 'flex' : 'none'; }
         function notify(msg) {
             notifyEl.innerText = msg;
             notifyEl.style.display = 'block';
@@ -122,12 +129,14 @@
         async function initDashboard() {
             if (!params) return window.location.href = '/login';
             try {
+                toggleLoader(true);
                 const decoded = JSON.parse(atob(params.replace(/-/g, '+').replace(/_/g, '/')));
                 document.getElementById('name').innerText = decoded.name;
                 document.getElementById('email').innerText = decoded.email;
                 window.token = decoded.token;
-                loadSubmissions();
+                await loadSubmissions();
             } catch (e) { document.body.innerHTML = '<h1>Session Error</h1>'; }
+            finally { toggleLoader(false); }
         }
 
         async function loadSubmissions() {
@@ -149,6 +158,7 @@
 
         document.getElementById('uploadForm').onsubmit = async (e) => {
             e.preventDefault();
+            toggleLoader(true);
             const formData = new FormData();
             formData.append('title', document.getElementById('title').value);
             formData.append('abstract', 'No Abstract');
@@ -157,8 +167,9 @@
             const res = await fetch(`${API_URL}/submit?token=${window.token}`, { method: 'POST', body: formData });
             const data = await res.json();
             notify(data.message || 'Submission successful');
-            loadSubmissions();
+            await loadSubmissions();
             e.target.reset();
+            toggleLoader(false);
         };
 
         initDashboard();
