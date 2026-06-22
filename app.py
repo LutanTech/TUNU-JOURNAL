@@ -1,23 +1,27 @@
+import base64
+import hashlib
+import hmac
+import json
 import os
 import secrets
 import string
-import json
-import base64
 import time
-import hmac
-import hashlib
 from urllib.parse import urlencode
 
 from flask import Flask, jsonify, redirect, request, session, url_for
+from flask import send_from_directory
+from flask import Flask
+from flask import jsonify, session
 from flask_cors import CORS
+from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from google_auth_oauthlib.flow import Flow
 import requests
+from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask import send_from_directory
+from utils import send_otp
 
 app = Flask(__name__)
 
@@ -43,6 +47,21 @@ os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+app.config['MAIL_SERVER'] = 'mail.tunupublishers.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'noreply@tunupublishers.com'
+app.config['MAIL_PASSWORD'] = 'YOUR_EMAIL_PASSWORD'
+app.config['MAIL_DEFAULT_SENDER'] = (
+    'Tunu Publishers',
+    'noreply@tunupublishers.com'
+)
+
+mail = Mail(app)
+
+
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
@@ -459,5 +478,20 @@ def my_submissions():
 def logout():
     return jsonify({"message": "delete token on client"})
 
-if name == '__main__':
+
+
+@app.route('/send-otp')
+def send_otp_route():
+    email = "lutancorpinoteam#@gmail.com"
+
+    otp = send_otp(email)
+
+    session['otp'] = otp
+
+    return jsonify({
+        "success": True,
+        "message": "OTP sent successfully"
+    })
+
+if __name__ == '__main__':
     app.run(debug=True)

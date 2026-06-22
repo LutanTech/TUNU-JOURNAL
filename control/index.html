@@ -3,209 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN DASHBOARD | THE TUNU JOURNAL</title>
+    <title>SYSTEM ADMIN | TUNU JOURNAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/resources/base/base.js"></script>
     <style>
-        /* @import url('https://fonts.googleapis.com/css2?family=Georgia&display=swap'); */
-        body { font-family: 'Georgia', serif; background-color: #f0f0f0; }
-        .status-badge { padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; font-family: sans-serif; font-weight: bold; }
-        .tab-btn.active { border-bottom: 2px solid black; }
+        :root { --bg: #f8fafc; --panel: #ffffff; --text: #0f172a; }
+        .dark { --bg: #0f172a; --panel: #1e293b; --text: #f1f5f9; }
+        body { background-color: var(--bg); color: var(--text); transition: background 0.2s; font-family: 'Inter', sans-serif; }
+        .panel { background-color: var(--panel); border: 1px solid #334155; }
+        .status-badge { padding: 2px 8px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid currentColor; }
+        .tab-btn.active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="flex min-h-screen">
 
-    <nav class="bg-white p-5 mb-8 border border-gray-300 flex flex-wrap gap-4 items-center">
-        <a href="index.html" class="text-xs font-bold uppercase hover:underline">HOME</a>
-        <a href="admin.html" class="text-xs font-bold uppercase hover:underline text-blue-800">ADMIN PANEL</a>
-    </nav>
+    <aside class="w-64 border-r border-slate-200 p-6 flex flex-col gap-8">
+        <div class="text-xl font-black">TUNU <span class="text-blue-500">ADMIN</span></div>
+        <nav class="flex flex-col gap-4 text-sm font-semibold">
+            <a href="#" class="text-blue-500"><i class="fas fa-database mr-2"></i> Submissions</a>
+            <a href="#" class="opacity-50 hover:opacity-100"><i class="fas fa-users mr-2"></i> Contributors</a>
+            <a href="#" class="opacity-50 hover:opacity-100"><i class="fas fa-gear mr-2"></i> Configuration</a>
+        </nav>
+    </aside>
 
-    <div class="bg-white p-6 md:p-10 max-w-6xl mx-auto border border-gray-300 rounded-sm">
-        <h1 class="text-2xl mb-6 border-b border-black pb-2 font-bold uppercase tracking-wide">Administrator Control Panel</h1>
-        
-        <!-- Filter Tabs -->
-        <div class="flex gap-4 mb-6 border-b border-gray-200">
-            <button id="f-all" class="tab-btn active px-4 py-2 text-sm font-bold uppercase" onclick="setFilter('All', this)">All</button>
-            <button id="f-pending" class="tab-btn px-4 py-2 text-sm font-bold uppercase" onclick="setFilter('Pending', this)">Pending</button>
-            <button id="f-approved" class="tab-btn px-4 py-2 text-sm font-bold uppercase" onclick="setFilter('Approved', this)">Approved</button>
-            <button id="f-rejected" class="tab-btn px-4 py-2 text-sm font-bold uppercase" onclick="setFilter('Rejected', this)">Rejected</button>
-        </div>
-        
-        <div id="error-box" class="hidden mb-6 p-4 bg-red-100 text-red-800 border border-red-300 rounded"></div>
-        
-        <div class="flex flex-col sm:flex-row gap-4 mb-6">
-            <button class="bg-black text-white px-5 py-2 hover:bg-gray-800 transition text-sm flex items-center gap-2 w-full sm:w-auto justify-center" onclick="loadAdminSubmissions()">
-                <i class="fas fa-sync"></i> Refresh
-            </button>
-            <input type="text" id="search-bar" class="border border-gray-300 p-2 w-full sm:w-80 outline-none focus:ring-1 ring-black" placeholder="Filter by title or author...">
-        </div>
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold">Dashboard</h1>
+            <div class="flex gap-4 items-center">
+                <button onclick="toggleTheme()" class="text-sm font-bold border px-3 py-1">TOGGLE THEME</button>
+                <div class="w-8 h-8 bg-slate-200 rounded-full"></div>
+            </div>
+        </header>
 
-        <div id="loader" class="text-center py-10 italic hidden"><i class="fas fa-spinner fa-spin mr-2"></i> Loading submissions...</div>
-        
-        <div class="overflow-x-auto">
-            <table class="w-full border-collapse border border-gray-300 text-sm">
-                <thead class="bg-black text-white">
+        <section class="panel p-6 mb-8">
+            <h2 class="text-xs font-bold uppercase mb-4 opacity-70">Global Settings</h2>
+            <div class="grid grid-cols-3 gap-6 text-sm">
+                <div>
+                    <label class="block text-xs font-bold mb-2">Display Density</label>
+                    <select class="w-full bg-transparent border p-2">
+                        <option>Comfortable</option>
+                        <option>Compact</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-2">Auto-Refresh Interval</label>
+                    <select class="w-full bg-transparent border p-2">
+                        <option>Disabled</option>
+                        <option>30 seconds</option>
+                        <option>5 minutes</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button class="bg-blue-600 text-white px-6 py-2 w-full text-xs font-bold uppercase">Save Config</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel p-6">
+            <div class="flex gap-4 mb-6 border-b border-slate-700/20">
+                <button class="tab-btn active px-4 py-2 text-xs font-bold uppercase" onclick="setFilter('All', this)">All</button>
+                <button class="tab-btn px-4 py-2 text-xs font-bold uppercase" onclick="setFilter('Pending', this)">Pending</button>
+                <button class="tab-btn px-4 py-2 text-xs font-bold uppercase" onclick="setFilter('Approved', this)">Approved</button>
+            </div>
+
+            <table class="w-full text-sm">
+                <thead class="text-left opacity-50">
                     <tr>
-                        <th class="p-4 text-left font-sans uppercase text-xs">ID</th>
-                        <th class="p-4 text-left font-sans uppercase text-xs">Author</th>
-                        <th class="p-4 text-left font-sans uppercase text-xs">Title</th>
-                        <th class="p-4 text-left font-sans uppercase text-xs">PDF</th>
-                        <th class="p-4 text-left font-sans uppercase text-xs">Status</th>
-                        <th class="p-4 text-left font-sans uppercase text-xs">Actions</th>
+                        <th class="p-3"><input type="checkbox"></th>
+                        <th class="p-3">Author</th>
+                        <th class="p-3">Title</th>
+                        <th class="p-3">Status</th>
+                        <th class="p-3">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="admin-list" class="divide-y divide-gray-200"></tbody>
+                <tbody id="admin-list"></tbody>
             </table>
-        </div>
-
-        <div id="pagination" class="mt-6 flex justify-center gap-2 items-center"></div>
-    </div>
+        </section>
+    </main>
 
     <script>
-        const API_BASE = window.API_URL;
-        let allSubmissions = [];
-        let filteredSubmissions = [];
-        let activeStatusFilter = 'All';
-        let currentPage = 1;
-        const itemsPerPage = 10;
+        const API_BASE = window.API_URL || '';
+        let submissions = [];
 
-        async function loadAdminSubmissions() {
-            const loader = document.getElementById('loader');
-            const errBox = document.getElementById('error-box');
-        
-            loader.classList.remove('hidden');
-            errBox.classList.add('hidden');
-        
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        async function init() {
             try {
                 const res = await fetch(`${API_BASE}/admin/submissions`);
-        
-                if (!res.ok) {
-                    throw new Error("Could not reach archival server.");
-                }
-        
-                allSubmissions = await res.json();
-                applyFilters();
-        
-                const allBtn = document.getElementById('f-all');
-                const pendingBtn = document.getElementById('f-pending');
-                const approvedBtn = document.getElementById('f-approved');
-                const rejectedBtn = document.getElementById('f-rejected');
-        
-                const pendingCount = allSubmissions.filter(
-                    s => String(s.status).toLowerCase() === 'pending'
-                ).length;
-        
-                const approvedCount = allSubmissions.filter(
-                    s => String(s.status).toLowerCase() === 'approved'
-                ).length;
-        
-                const rejectedCount = allSubmissions.filter(
-                    s => String(s.status).toLowerCase() === 'rejected'
-                ).length;
-        
-                allBtn.textContent = `ALL (${allSubmissions.length})`;
-                pendingBtn.textContent = `PENDING (${pendingCount})`;
-                approvedBtn.textContent = `APPROVED (${approvedCount})`;
-                rejectedBtn.textContent = `REJECTED (${rejectedCount})`;
-        
-            } catch (err) {
-                errBox.textContent = err.message;
-                errBox.classList.remove('hidden');
-            } finally {
-                loader.classList.add('hidden');
-            }
+                submissions = await res.json();
+                render();
+            } catch(e) { console.error(e); }
         }
 
-        function setFilter(status, el) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            el.classList.add('active');
-            activeStatusFilter = status;
-            applyFilters();
-        }
-
-        function applyFilters() {
-            const query = document.getElementById('search-bar').value.toLowerCase();
-            
-            filteredSubmissions = allSubmissions.filter(s => {
-                const matchesSearch = s.title.toLowerCase().includes(query) || s.author_email.toLowerCase().includes(query);
-                const matchesStatus = activeStatusFilter === 'All' || s.status.toLowerCase() === activeStatusFilter.toLowerCase();
-                return matchesSearch && matchesStatus;
-            });
-            
-            currentPage = 1;
-            renderTable();
-        }
-
-        function renderTable() {
-            const list = document.getElementById('admin-list');
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            const pageData = filteredSubmissions.slice(start, end);
-
-
-            list.innerHTML = pageData.map(s => `
-                <tr class="hover:bg-gray-50">
-                    <td class="p-4">${s.id}</td>
-                    <td class="p-4">${s.author_email}</td>
-                    <td class="p-4 font-semibold">${s.title}</td>
-                    <td class="p-4">
-                        <a href="${API_BASE}/${s.pdf_url}" target="_blank" class="text-blue-600 hover:underline">
-                            <i class="fas fa-file-pdf"></i> View
-                        </a>
-                    </td>
-                    <td class="p-4">
-                        <span class="status-badge bg-${s.status.toLowerCase() === 'pending' || s.status.toLowerCase().includes('pending') ? 'yellow-200 text-yellow-800' : s.status.toLowerCase() === 'approved' ? 'green-600 text-white' : 'red-600 text-white'}">
-                            ${s.status.toUpperCase()}
-                        </span>
-                    </td>
-                    <td class="p-4 flex gap-2">
-                        <button class="bg-green-600 text-white px-3 py-1 hover:bg-green-700 text-xs rounded transition" onclick="updateStatus('${s.id}', 'Approved')">Approve</button>
-                        <button class="bg-red-600 text-white px-3 py-1 hover:bg-red-700 text-xs rounded transition" onclick="updateStatus('${s.id}', 'Rejected')">Reject</button>
-                    </td>
+        function render() {
+            document.getElementById('admin-list').innerHTML = submissions.map(s => `
+                <tr class="border-t border-slate-700/10">
+                    <td class="p-3"><input type="checkbox"></td>
+                    <td class="p-3">${s.author_email}</td>
+                    <td class="p-3 font-medium">${s.title}</td>
+                    <td class="p-3"><span class="status-badge ${s.status === 'Approved' ? 'text-green-500' : 'text-yellow-500'}">${s.status}</span></td>
+                    <td class="p-3 italic opacity-50 text-xs">View | Edit | Delete</td>
                 </tr>
             `).join('');
-            
-            renderPagination();
         }
 
-        function renderPagination() {
-            const pagBox = document.getElementById('pagination');
-            const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
-            if(totalPages <= 1) { pagBox.innerHTML = ''; return; }
-
-            let html = `<button class="px-3 py-1 border rounded" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>`;
-            for(let i = 1; i <= totalPages; i++) {
-                html += `<button class="px-3 py-1 border rounded ${currentPage === i ? 'bg-black text-white' : ''}" onclick="changePage(${i})">${i}</button>`;
-            }
-            html += `<button class="px-3 py-1 border rounded" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`;
-            pagBox.innerHTML = html;
-        }
-
-        function changePage(page) {
-            currentPage = page;
-            renderTable();
-        }
-
-        document.getElementById('search-bar').addEventListener('input', applyFilters);
-
-        async function updateStatus(id, status) {
-            if(!confirm(`Are you sure you want to set status to ${status}?`)) return;
-            try {
-                await fetch(`${API_BASE}/admin/update/${id}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status })
-                });
-                loadAdminSubmissions();
-            } catch(e) {
-                const errBox = document.getElementById('error-box');
-                errBox.innerText = "Failed to update status.";
-                errBox.classList.remove('hidden');
-            }
-        }
-
-        loadAdminSubmissions();
+        init();
     </script>
 </body>
 </html>
